@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+     id:  000-init-tables
+     author:  liq
+     changes:
+       - sqlFile:
+           relativeToChangelogFile: true
+           path: 000-init-tables.sql
+           splitStatements: true
+           stripComments: true
+  - changeSet:
+     id:  001-insert-debtors
+     author:  liq
+     preConditions:
+       - onFail: WARN
+       - tableExists:
+           tableName: debtors
+     changes:
+       - sqlFile:
+           relativeToChangelogFile: true
+           path: 001-insert-debtors.sql
+           splitStatements: true
+           stripComments: true
+  - changeSet:
+     id:  002-insert-guardians
+     author:  liq
+     preConditions:
+       - onFail: WARN
+       - tableExists:
+           tableName: guardians
+     changes:
+       - sqlFile:
+           relativeToChangelogFile: true
+           path: 002-insert-guardians.sql
+           splitStatements: true
+           stripComments: true
+  - changeSet:
+     id:  003-insert-children
+     author:  liq
+     preConditions:
+       - onFail: WARN
+       - tableExists:
+           tableName: children
+     changes:
+       - sqlFile:
+           relativeToChangelogFile: true
+           path: 003-insert-children.sql
+           splitStatements: true
+           stripComments: true

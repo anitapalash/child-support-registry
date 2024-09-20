@@ -1,0 +1,29 @@
+services:
+  db:
+    image: 'postgres:13.3'
+    container_name: db
+    restart: unless-stopped
+    environment:
+      - 'POSTGRES_DB=crs'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '15432:5432'
+# TODO: В контейнере не проходят миграции на insert данных в таблицы
+#  crs:
+#    image: 'child-support-registry:latest'
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: crs
+#    restart: on-failure:5
+#    pull_policy: always
+#    ports:
+#      - '8080:8080'
+#    depends_on:
+#      - db
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/crs
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+#      - SPRING_DATASOURCE_PASSWORD=postgres
+#      - SPRING_DATASOURCE_USERNAME=postgres
