@@ -28,7 +28,7 @@ public class GuardianServiceImpl implements GuardianService {
 
     @Override
     public Page<GuardianDto> getPage(Pageable pageable) {
-        return null;
+        return guardiansRepository.findAll(pageable).map(mapper::guardianToDto);
     }
 
     @Override
@@ -37,12 +37,7 @@ public class GuardianServiceImpl implements GuardianService {
     }
 
     @Override
-    public Guardian create(GuardianDto guardianDto) {
-        return guardiansRepository.save(mapper.toEntity(guardianDto));
-    }
-
-    @Override
-    public List<Guardian> createList(List<GuardianDto> guardianDtos) {
+    public List<Guardian> create(List<GuardianDto> guardianDtos) {
         return guardiansRepository.saveAll(guardianDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
     }
 

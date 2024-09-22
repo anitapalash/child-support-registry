@@ -35,7 +35,7 @@ public class ChildrenServiceImpl implements ChildrenService {
 
     @Override
     public Page<ChildDto> getSomeChildren(Pageable pageable) {
-        return null;
+        return childrenRepository.findAll(pageable).map(mapper::childToChildDto);
     }
 
     @Override
@@ -55,12 +55,7 @@ public class ChildrenServiceImpl implements ChildrenService {
     }
 
     @Override
-    public Child create(ChildDto childDto) {
-        return childrenRepository.save(mapper.toEntity(childDto));
-    }
-
-    @Override
-    public List<Child> createList(List<ChildDto> childDtos) {
+    public List<Child> create(List<ChildDto> childDtos) {
         return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
     }
 

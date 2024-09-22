@@ -35,11 +35,11 @@ public class ChildrenController {
 
     @PostMapping
     public List<Child> saveChildren(@RequestBody List<ChildDto> childDtos) {
-        return service.createList(childDtos);
+        return service.create(childDtos);
     }
 
     @PostMapping("/single")
     public Child saveOneChild(@RequestBody ChildDto childDto) {
-        return service.create(childDto);
+        return service.create(List.of(childDto)).get(0);
     }
 }
