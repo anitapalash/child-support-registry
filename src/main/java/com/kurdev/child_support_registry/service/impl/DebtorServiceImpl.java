@@ -5,6 +5,7 @@ import com.kurdev.child_support_registry.dto.DebtorDto;
 import com.kurdev.child_support_registry.mapper.DebtorMapper;
 import com.kurdev.child_support_registry.repository.DebtorsRepository;
 import com.kurdev.child_support_registry.service.DebtorService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class DebtorServiceImpl implements DebtorService {
 
     private final DebtorsRepository debtorsRepository;

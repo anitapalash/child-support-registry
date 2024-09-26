@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChildrenServiceImpl implements ChildrenService {
 
     private final ChildrenRepository childrenRepository;
@@ -51,19 +52,16 @@ public class ChildrenServiceImpl implements ChildrenService {
     }
 
     @Override
-    @Transactional
     public List<Child> create(List<ChildDto> childDtos) {
         return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
     }
 
     @Override
-    @Transactional
     public Child update(ChildDto childDto) {
         return childrenRepository.save(mapper.toEntity(childDto));
     }
 
     @Override
-    @Transactional
     public void delete(Long id) {
         childrenRepository.delete(id);
     }
