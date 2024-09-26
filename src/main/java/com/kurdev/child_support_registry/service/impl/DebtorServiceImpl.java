@@ -28,7 +28,7 @@ public class DebtorServiceImpl implements DebtorService {
 
     @Override
     public Page<DebtorDto> getPage(Pageable pageable) {
-        return null;
+        return debtorsRepository.findAll(pageable).map(mapper::debtorToDto);
     }
 
     @Override
@@ -37,12 +37,7 @@ public class DebtorServiceImpl implements DebtorService {
     }
 
     @Override
-    public Debtor create(DebtorDto dto) {
-        return debtorsRepository.save(mapper.toEntity(dto));
-    }
-
-    @Override
-    public List<Debtor> createList(List<DebtorDto> debtorDtos) {
+    public List<Debtor> create(List<DebtorDto> debtorDtos) {
         return debtorsRepository.saveAll(debtorDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
     }
 

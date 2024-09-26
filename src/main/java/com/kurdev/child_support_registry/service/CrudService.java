@@ -14,9 +14,7 @@ public interface CrudService<T, DTO> {
 
     Optional<DTO> findById(Long id);
 
-    T create(DTO dto);
-
-    List<T> createList(List<DTO> dtoList);
+    List<T> create(List<DTO> dtoList);
 
     T update(DTO dto);
 
