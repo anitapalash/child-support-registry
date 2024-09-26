@@ -20,7 +20,7 @@ public class ChildrenController {
 
     @GetMapping
     public Page<ChildDto> getSomeChildren(Pageable pageable) {
-        return service.getSomeChildren(pageable);
+        return service.getPage(pageable);
     }
 
     @GetMapping("/by-debtor/{id}")

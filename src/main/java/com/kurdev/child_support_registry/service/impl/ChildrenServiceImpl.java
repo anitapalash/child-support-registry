@@ -5,6 +5,7 @@ import com.kurdev.child_support_registry.dto.ChildDto;
 import com.kurdev.child_support_registry.mapper.ChildMapper;
 import com.kurdev.child_support_registry.repository.ChildrenRepository;
 import com.kurdev.child_support_registry.service.ChildrenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,11 +35,6 @@ public class ChildrenServiceImpl implements ChildrenService {
     }
 
     @Override
-    public Page<ChildDto> getSomeChildren(Pageable pageable) {
-        return childrenRepository.findAll(pageable).map(mapper::childToChildDto);
-    }
-
-    @Override
     public List<ChildDto> getAll() {
         return childrenRepository.findAll().stream()
                 .map(mapper::childToChildDto).collect(Collectors.toList());
@@ -46,7 +42,7 @@ public class ChildrenServiceImpl implements ChildrenService {
 
     @Override
     public Page<ChildDto> getPage(Pageable pageable) {
-        return null;
+        return childrenRepository.findAll(pageable).map(mapper::childToChildDto);
     }
 
     @Override
@@ -55,16 +51,19 @@ public class ChildrenServiceImpl implements ChildrenService {
     }
 
     @Override
+    @Transactional
     public List<Child> create(List<ChildDto> childDtos) {
         return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
     }
 
     @Override
+    @Transactional
     public Child update(ChildDto childDto) {
         return childrenRepository.save(mapper.toEntity(childDto));
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         childrenRepository.delete(id);
     }
