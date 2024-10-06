@@ -25,17 +25,17 @@ public class DebtorServiceImpl implements DebtorService {
 
     @Override
     public List<DebtorDto> getAll() {
-        return debtorsRepository.findAll().stream().map(mapper::debtorToDto).collect(Collectors.toList());
+        return debtorsRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public Page<DebtorDto> getPage(Pageable pageable) {
-        return debtorsRepository.findAll(pageable).map(mapper::debtorToDto);
+        return debtorsRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
     public Optional<DebtorDto> findById(Long id) {
-        return debtorsRepository.findById(id).map(mapper::debtorToDto);
+        return debtorsRepository.findById(id).map(mapper::toDto);
     }
 
     @Override
@@ -55,6 +55,6 @@ public class DebtorServiceImpl implements DebtorService {
 
     @Override
     public Optional<DebtorDto> findByChildId(Long childId) {
-        return Optional.empty();
+        return debtorsRepository.findByChildId(childId).map(mapper::toDto);
     }
 }

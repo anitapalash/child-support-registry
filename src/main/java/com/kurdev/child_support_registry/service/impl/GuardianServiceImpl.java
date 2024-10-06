@@ -25,17 +25,17 @@ public class GuardianServiceImpl implements GuardianService {
 
     @Override
     public List<GuardianDto> getAll() {
-        return guardiansRepository.findAll().stream().map(mapper::guardianToDto).collect(Collectors.toList());
+        return guardiansRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public Page<GuardianDto> getPage(Pageable pageable) {
-        return guardiansRepository.findAll(pageable).map(mapper::guardianToDto);
+        return guardiansRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
     public Optional<GuardianDto> findById(Long id) {
-        return guardiansRepository.findById(id).map(mapper::guardianToDto);
+        return guardiansRepository.findById(id).map(mapper::toDto);
     }
 
     @Override
@@ -55,6 +55,6 @@ public class GuardianServiceImpl implements GuardianService {
 
     @Override
     public Optional<GuardianDto> findByChildId(Long childId) {
-        return Optional.empty();
+        return guardiansRepository.findByChildId(childId).map(mapper::toDto);
     }
 }

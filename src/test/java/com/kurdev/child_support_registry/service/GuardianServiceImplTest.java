@@ -117,7 +117,7 @@ public class GuardianServiceImplTest {
         String nameBefore = guardian.getName();
 
         guardian.setName("Константин");
-        var newGuardian = guardianMapper.guardianToDto(guardian);
+        var newGuardian = guardianMapper.toDto(guardian);
 
         var result = guardianService.update(newGuardian);
 

@@ -117,7 +117,7 @@ public class DebtorServiceImplTest {
         String nameBefore = debtor.getName();
 
         debtor.setName("Константин");
-        var newDebtor = debtorMapper.debtorToDto(debtor);
+        var newDebtor = debtorMapper.toDto(debtor);
 
         var result = debtorService.update(newDebtor);
 

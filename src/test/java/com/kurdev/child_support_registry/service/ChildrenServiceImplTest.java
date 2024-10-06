@@ -140,7 +140,7 @@ public class ChildrenServiceImplTest {
         String nameBefore = child.getName();
 
         child.setName("Константин");
-        var newChild = childMapper.childToChildDto(child);
+        var newChild = childMapper.toDto(child);
 
         var result = childrenService.update(newChild);
 

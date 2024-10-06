@@ -26,29 +26,29 @@ public class ChildrenServiceImpl implements ChildrenService {
     @Override
     public List<ChildDto> findByDebtorId(Long debtorId) {
         return childrenRepository.findByDebtorId(debtorId).stream()
-                .map(mapper::childToChildDto).collect(Collectors.toList());
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ChildDto> findByGuardianId(Long guardianId) {
         return childrenRepository.findByGuardianId(guardianId).stream()
-                .map(mapper::childToChildDto).collect(Collectors.toList());
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ChildDto> getAll() {
         return childrenRepository.findAll().stream()
-                .map(mapper::childToChildDto).collect(Collectors.toList());
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public Page<ChildDto> getPage(Pageable pageable) {
-        return childrenRepository.findAll(pageable).map(mapper::childToChildDto);
+        return childrenRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
     public Optional<ChildDto> findById(Long id) {
-        return childrenRepository.findById(id).map(mapper::childToChildDto);
+        return childrenRepository.findById(id).map(mapper::toDto);
     }
 
     @Override
