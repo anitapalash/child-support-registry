@@ -1,6 +1,5 @@
 package com.kurdev.child_support_registry.controller;
 
-import com.kurdev.child_support_registry.domain.Child;
 import com.kurdev.child_support_registry.dto.ChildDto;
 import com.kurdev.child_support_registry.service.ChildrenService;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +33,12 @@ public class ChildrenController {
     }
 
     @PostMapping
-    public List<Child> saveChildren(@RequestBody List<ChildDto> childDtos) {
+    public List<ChildDto> saveChildren(@RequestBody List<ChildDto> childDtos) {
         return service.create(childDtos);
     }
 
     @PostMapping("/single")
-    public Child saveOneChild(@RequestBody ChildDto childDto) {
+    public ChildDto saveOneChild(@RequestBody ChildDto childDto) {
         return service.create(List.of(childDto)).get(0);
     }
 }

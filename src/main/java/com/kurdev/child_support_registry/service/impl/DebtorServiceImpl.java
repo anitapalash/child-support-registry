@@ -39,8 +39,9 @@ public class DebtorServiceImpl implements DebtorService {
     }
 
     @Override
-    public List<Debtor> create(List<DebtorDto> debtorDtos) {
-        return debtorsRepository.saveAll(debtorDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
+    public List<DebtorDto> create(List<DebtorDto> debtorDtos) {
+        return debtorsRepository.saveAll(debtorDtos.stream().map(mapper::toEntity).collect(Collectors.toList())).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override

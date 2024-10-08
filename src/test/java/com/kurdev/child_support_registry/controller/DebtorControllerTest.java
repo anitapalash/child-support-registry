@@ -1,10 +1,10 @@
 package com.kurdev.child_support_registry.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kurdev.child_support_registry.repository.ChildrenRepository;
+import com.kurdev.child_support_registry.mapper.ChildMapper;
+import com.kurdev.child_support_registry.repository.DebtorsRepository;
 import com.kurdev.child_support_registry.service.ChildrenService;
 import com.kurdev.child_support_registry.service.DebtorService;
-import com.kurdev.child_support_registry.service.GuardianService;
 import com.kurdev.child_support_registry.stub.TestConstants;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -29,9 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ChildrenControllerTest {
+public class DebtorControllerTest {
 
-    public static final String CHILDREN_PATH = "/children";
+    public static final String DEBTOR_PATH = "/debtor";
     @LocalServerPort
     private Integer port;
 
@@ -61,21 +61,21 @@ public class ChildrenControllerTest {
     @Autowired
     private DebtorService debtorService;
     @Autowired
-    private GuardianService guardianService;
+    private DebtorsRepository debtorsRepository;
     @Autowired
-    private ChildrenRepository childrenRepository;
+    private ChildMapper childMapper;
 
     @BeforeEach
     void setUp() {
         RestAssured.baseURI = "http://localhost:" + port;
-        childrenRepository.deleteAll();
+        debtorsRepository.deleteAll();
     }
 
     @Test
     void getEmptyPage() {
         var result = given()
                 .when()
-                .get(CHILDREN_PATH);
+                .get(DEBTOR_PATH);
 
         assertEquals(HttpStatus.SC_OK, result.getStatusCode());
         assertNotNull(result.getBody());
@@ -84,12 +84,12 @@ public class ChildrenControllerTest {
 
     @Test
     void getPageTest() {
-        var child = TestConstants.stubChildDto();
-        childrenService.create(List.of(child));
+        var debtor = TestConstants.stubDebtorDto();
+        debtorService.create(List.of(debtor));
 
         var result = given()
                 .when()
-                .get(CHILDREN_PATH);
+                .get(DEBTOR_PATH);
 
         assertEquals(HttpStatus.SC_OK, result.getStatusCode());
         assertNotNull(result.getBody());
@@ -97,60 +97,46 @@ public class ChildrenControllerTest {
     }
 
     @Test
-    void getChildrenByGuardianTest() {
-        var guardian = TestConstants.stubGuardianDto();
-        guardianService.create(List.of(guardian));
-        var child = TestConstants.stubChildDto();
-        child.setGuardian(guardian);
-        childrenService.create(List.of(child));
-
-        given()
-                .when()
-                .get(CHILDREN_PATH + "/by-guardian/" + TestConstants.TEST_ID)
-                .then()
-                .statusCode(200)
-                .body(".", hasSize(1));
-    }
-
-    @Test
-    void getChildrenByDebtorTest() {
+    void getDebtorByChildTest() {
         var debtor = TestConstants.stubDebtorDto();
-        debtorService.create(List.of(debtor));
+        debtor = debtorService.create(List.of(debtor)).get(0);
         var child = TestConstants.stubChildDto();
         child.setDebtor(debtor);
-        childrenService.create(List.of(child));
+        var children = childrenService.create(List.of(child));
 
         given()
                 .when()
-                .get(CHILDREN_PATH + "/by-debtor/" + TestConstants.TEST_ID)
+                .get(DEBTOR_PATH + "/by-child/" + children.get(0).getId())
+                .then()
+                .statusCode(200)
+                .body("surname", is("Иванов"))
+                .and()
+                .body("name", is("Иван"));
+    }
+
+    @Test
+    void saveDebtorsTest() {
+        var debtorDto = TestConstants.stubDebtorDto();
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(List.of(debtorDto))
+                .post(DEBTOR_PATH)
                 .then()
                 .statusCode(200)
                 .body(".", hasSize(1));
     }
 
     @Test
-    void saveChildrenTest() {
-        var childDto = TestConstants.stubChildDto();
+    void saveDebtorTest() {
+        var debtorDto = TestConstants.stubDebtorDto();
 
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(List.of(childDto))
-                .post(CHILDREN_PATH)
-                .then()
-                .statusCode(200)
-                .body(".", hasSize(1));
-    }
-
-    @Test
-    void saveChildTest() {
-        var childDto = TestConstants.stubChildDto();
-
-        given()
-                .when()
-                .contentType(ContentType.JSON)
-                .body(childDto)
-                .post(CHILDREN_PATH + "/single")
+                .body(debtorDto)
+                .post(DEBTOR_PATH + "/single")
                 .then()
                 .statusCode(200)
                 .body("surname", is("Иванов"));

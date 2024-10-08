@@ -52,8 +52,9 @@ public class ChildrenServiceImpl implements ChildrenService {
     }
 
     @Override
-    public List<Child> create(List<ChildDto> childDtos) {
-        return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
+    public List<ChildDto> create(List<ChildDto> childDtos) {
+        return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList())).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override

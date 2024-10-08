@@ -39,8 +39,9 @@ public class GuardianServiceImpl implements GuardianService {
     }
 
     @Override
-    public List<Guardian> create(List<GuardianDto> guardianDtos) {
-        return guardiansRepository.saveAll(guardianDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
+    public List<GuardianDto> create(List<GuardianDto> guardianDtos) {
+        return guardiansRepository.saveAll(guardianDtos.stream().map(mapper::toEntity).collect(Collectors.toList())).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
