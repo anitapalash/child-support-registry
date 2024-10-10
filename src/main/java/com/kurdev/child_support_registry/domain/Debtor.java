@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -24,7 +24,7 @@ public class Debtor {
     @Column
     private String patronymic;
     @Column
-    private ZonedDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @OneToMany
     @JoinColumn(name = "debtor_id", referencedColumnName = "id")

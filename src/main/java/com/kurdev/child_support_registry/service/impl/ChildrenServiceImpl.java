@@ -5,6 +5,7 @@ import com.kurdev.child_support_registry.dto.ChildDto;
 import com.kurdev.child_support_registry.mapper.ChildMapper;
 import com.kurdev.child_support_registry.repository.ChildrenRepository;
 import com.kurdev.child_support_registry.service.ChildrenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChildrenServiceImpl implements ChildrenService {
 
     private final ChildrenRepository childrenRepository;
@@ -24,39 +26,35 @@ public class ChildrenServiceImpl implements ChildrenService {
     @Override
     public List<ChildDto> findByDebtorId(Long debtorId) {
         return childrenRepository.findByDebtorId(debtorId).stream()
-                .map(mapper::childToChildDto).collect(Collectors.toList());
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ChildDto> findByGuardianId(Long guardianId) {
         return childrenRepository.findByGuardianId(guardianId).stream()
-                .map(mapper::childToChildDto).collect(Collectors.toList());
-    }
-
-    @Override
-    public Page<ChildDto> getSomeChildren(Pageable pageable) {
-        return childrenRepository.findAll(pageable).map(mapper::childToChildDto);
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ChildDto> getAll() {
         return childrenRepository.findAll().stream()
-                .map(mapper::childToChildDto).collect(Collectors.toList());
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public Page<ChildDto> getPage(Pageable pageable) {
-        return null;
+        return childrenRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
     public Optional<ChildDto> findById(Long id) {
-        return childrenRepository.findById(id).map(mapper::childToChildDto);
+        return childrenRepository.findById(id).map(mapper::toDto);
     }
 
     @Override
-    public List<Child> create(List<ChildDto> childDtos) {
-        return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
+    public List<ChildDto> create(List<ChildDto> childDtos) {
+        return childrenRepository.saveAll(childDtos.stream().map(mapper::toEntity).collect(Collectors.toList())).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override

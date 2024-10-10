@@ -5,6 +5,7 @@ import com.kurdev.child_support_registry.dto.GuardianDto;
 import com.kurdev.child_support_registry.mapper.GuardianMapper;
 import com.kurdev.child_support_registry.repository.GuardiansRepository;
 import com.kurdev.child_support_registry.service.GuardianService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class GuardianServiceImpl implements GuardianService {
 
     private final GuardiansRepository guardiansRepository;
@@ -23,22 +25,23 @@ public class GuardianServiceImpl implements GuardianService {
 
     @Override
     public List<GuardianDto> getAll() {
-        return guardiansRepository.findAll().stream().map(mapper::guardianToDto).collect(Collectors.toList());
+        return guardiansRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public Page<GuardianDto> getPage(Pageable pageable) {
-        return guardiansRepository.findAll(pageable).map(mapper::guardianToDto);
+        return guardiansRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
     public Optional<GuardianDto> findById(Long id) {
-        return guardiansRepository.findById(id).map(mapper::guardianToDto);
+        return guardiansRepository.findById(id).map(mapper::toDto);
     }
 
     @Override
-    public List<Guardian> create(List<GuardianDto> guardianDtos) {
-        return guardiansRepository.saveAll(guardianDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
+    public List<GuardianDto> create(List<GuardianDto> guardianDtos) {
+        return guardiansRepository.saveAll(guardianDtos.stream().map(mapper::toEntity).collect(Collectors.toList())).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -53,6 +56,6 @@ public class GuardianServiceImpl implements GuardianService {
 
     @Override
     public Optional<GuardianDto> findByChildId(Long childId) {
-        return Optional.empty();
+        return guardiansRepository.findByChildId(childId).map(mapper::toDto);
     }
 }

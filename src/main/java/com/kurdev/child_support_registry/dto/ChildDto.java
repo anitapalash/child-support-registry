@@ -1,24 +1,27 @@
 package com.kurdev.child_support_registry.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
+import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
-public class ChildDto {
-
+@NoArgsConstructor
+public class ChildDto implements Serializable {
+    @JsonIgnore
+    private Long id;
     @NotBlank
     private String surname;
     @NotBlank
     private String name;
     private String patronymic;
-    private ZonedDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     private Long debt;
 
-    @NotNull
     private DebtorDto debtor;
     private GuardianDto guardian;
-    private boolean deleted;
+    private boolean deleted = false;
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class DebtorDto {
     @NotBlank
     private String name;
     private String patronymic;
-    private ZonedDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     private List<ChildDto> children = new ArrayList<>();
     private String passport;
     @NotBlank

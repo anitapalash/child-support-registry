@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,7 +16,7 @@ public class GuardianDto {
     @NotBlank
     private String name;
     private String patronymic;
-    private ZonedDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     private List<ChildDto> children;
     private String passport;
