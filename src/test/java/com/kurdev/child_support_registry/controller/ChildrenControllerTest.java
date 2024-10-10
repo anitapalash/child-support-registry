@@ -8,7 +8,6 @@ import com.kurdev.child_support_registry.service.GuardianService;
 import com.kurdev.child_support_registry.stub.TestConstants;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -27,17 +27,16 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class ChildrenControllerTest {
 
     public static final String CHILDREN_PATH = "/children";
     @LocalServerPort
     private Integer port;
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            "postgres:13.3"
-    );
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:13.3");
 
     @BeforeAll
     static void beforeAll() {
@@ -77,7 +76,7 @@ public class ChildrenControllerTest {
                 .when()
                 .get(CHILDREN_PATH);
 
-        assertEquals(HttpStatus.SC_OK, result.getStatusCode());
+        assertEquals(HttpStatus.OK.value(), result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(0, result.getBody().as(JsonNode.class).get("totalElements").asInt());
     }
@@ -91,7 +90,7 @@ public class ChildrenControllerTest {
                 .when()
                 .get(CHILDREN_PATH);
 
-        assertEquals(HttpStatus.SC_OK, result.getStatusCode());
+        assertEquals(HttpStatus.OK.value(), result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().as(JsonNode.class).get("totalElements").asInt());
     }
@@ -108,7 +107,7 @@ public class ChildrenControllerTest {
                 .when()
                 .get(CHILDREN_PATH + "/by-guardian/" + TestConstants.TEST_ID)
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body(".", hasSize(1));
     }
 
@@ -124,22 +123,24 @@ public class ChildrenControllerTest {
                 .when()
                 .get(CHILDREN_PATH + "/by-debtor/" + TestConstants.TEST_ID)
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body(".", hasSize(1));
     }
 
     @Test
     void saveChildrenTest() {
         var childDto = TestConstants.stubChildDto();
+        var childDto2 = TestConstants.stubChildDto();
+        childDto2.setName("Александр");
 
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(List.of(childDto))
+                .body(List.of(childDto, childDto2))
                 .post(CHILDREN_PATH)
                 .then()
-                .statusCode(200)
-                .body(".", hasSize(1));
+                .statusCode(HttpStatus.OK.value())
+                .body(".", hasSize(2));
     }
 
     @Test
@@ -152,7 +153,7 @@ public class ChildrenControllerTest {
                 .body(childDto)
                 .post(CHILDREN_PATH + "/single")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("surname", is("Иванов"));
     }
 }

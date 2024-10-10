@@ -8,7 +8,6 @@ import com.kurdev.child_support_registry.service.DebtorService;
 import com.kurdev.child_support_registry.stub.TestConstants;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -27,17 +27,16 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class DebtorControllerTest {
 
     public static final String DEBTOR_PATH = "/debtor";
     @LocalServerPort
     private Integer port;
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            "postgres:13.3"
-    );
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:13.3");
 
     @BeforeAll
     static void beforeAll() {
@@ -77,7 +76,7 @@ public class DebtorControllerTest {
                 .when()
                 .get(DEBTOR_PATH);
 
-        assertEquals(HttpStatus.SC_OK, result.getStatusCode());
+        assertEquals(HttpStatus.OK.value(), result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(0, result.getBody().as(JsonNode.class).get("totalElements").asInt());
     }
@@ -91,7 +90,7 @@ public class DebtorControllerTest {
                 .when()
                 .get(DEBTOR_PATH);
 
-        assertEquals(HttpStatus.SC_OK, result.getStatusCode());
+        assertEquals(HttpStatus.OK.value(), result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().as(JsonNode.class).get("totalElements").asInt());
     }
@@ -108,7 +107,7 @@ public class DebtorControllerTest {
                 .when()
                 .get(DEBTOR_PATH + "/by-child/" + children.get(0).getId())
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("surname", is("Иванов"))
                 .and()
                 .body("name", is("Иван"));
@@ -117,15 +116,17 @@ public class DebtorControllerTest {
     @Test
     void saveDebtorsTest() {
         var debtorDto = TestConstants.stubDebtorDto();
+        var debtorDto2 = TestConstants.stubDebtorDto();
+        debtorDto2.setName("Владимир");
 
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(List.of(debtorDto))
+                .body(List.of(debtorDto, debtorDto2))
                 .post(DEBTOR_PATH)
                 .then()
-                .statusCode(200)
-                .body(".", hasSize(1));
+                .statusCode(HttpStatus.OK.value())
+                .body(".", hasSize(2));
     }
 
     @Test
@@ -138,7 +139,7 @@ public class DebtorControllerTest {
                 .body(debtorDto)
                 .post(DEBTOR_PATH + "/single")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("surname", is("Иванов"));
     }
 }
