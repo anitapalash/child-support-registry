@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "children")
@@ -22,7 +22,7 @@ public class Child {
     @Column
     private String patronymic;
     @Column
-    private ZonedDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column
     private Long debt;
 

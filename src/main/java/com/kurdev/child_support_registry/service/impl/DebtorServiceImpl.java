@@ -5,6 +5,7 @@ import com.kurdev.child_support_registry.dto.DebtorDto;
 import com.kurdev.child_support_registry.mapper.DebtorMapper;
 import com.kurdev.child_support_registry.repository.DebtorsRepository;
 import com.kurdev.child_support_registry.service.DebtorService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class DebtorServiceImpl implements DebtorService {
 
     private final DebtorsRepository debtorsRepository;
@@ -23,22 +25,23 @@ public class DebtorServiceImpl implements DebtorService {
 
     @Override
     public List<DebtorDto> getAll() {
-        return debtorsRepository.findAll().stream().map(mapper::debtorToDto).collect(Collectors.toList());
+        return debtorsRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public Page<DebtorDto> getPage(Pageable pageable) {
-        return debtorsRepository.findAll(pageable).map(mapper::debtorToDto);
+        return debtorsRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
     public Optional<DebtorDto> findById(Long id) {
-        return debtorsRepository.findById(id).map(mapper::debtorToDto);
+        return debtorsRepository.findById(id).map(mapper::toDto);
     }
 
     @Override
-    public List<Debtor> create(List<DebtorDto> debtorDtos) {
-        return debtorsRepository.saveAll(debtorDtos.stream().map(mapper::toEntity).collect(Collectors.toList()));
+    public List<DebtorDto> create(List<DebtorDto> debtorDtos) {
+        return debtorsRepository.saveAll(debtorDtos.stream().map(mapper::toEntity).collect(Collectors.toList())).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -53,6 +56,6 @@ public class DebtorServiceImpl implements DebtorService {
 
     @Override
     public Optional<DebtorDto> findByChildId(Long childId) {
-        return Optional.empty();
+        return debtorsRepository.findByChildId(childId).map(mapper::toDto);
     }
 }

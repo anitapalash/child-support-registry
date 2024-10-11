@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -23,7 +23,7 @@ public class Guardian {
     @Column
     private String patronymic;
     @Column
-    private ZonedDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @OneToMany
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
